@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "https://jobapplytracker-v2.onrender.com",
+    baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true,
 });
 
