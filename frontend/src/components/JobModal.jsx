@@ -1,3 +1,4 @@
+import { CaretDown } from "phosphor-react";
 import { JOB_ROLES, JOB_STATUSES } from "../data/jobConfig";
 import Glass from "./Glass";
 import { useState } from "react";
@@ -51,13 +52,15 @@ function JobModal({ category, onClose, onAdd, onUpdate, job }){
         onClose();
     }
 
+    const selectClass = "rounded-lg px-3 py-2 bg-white/20 text-white outline-none cursor-pointer focus:ring-2 focus:ring-orange-500/50 transition";
+
     return(
         <div
             className="fixed inset-0 z-[100] 
                         bg-black/60 backdrop-blur-sm 
                         transition-opacity duration-300 
                         overflow-y-auto">
-            <div className="min-h-full flex items-center justify-center px-4
+            <div className="min-h-full flex items-center justify-center px-6
                             transform transition-all duration-300 scale-100 opacity-100">
             <Glass>
                 <div className="w-full max-w-sm max-h-[90vh] overflow-y-auto">
@@ -69,7 +72,7 @@ function JobModal({ category, onClose, onAdd, onUpdate, job }){
                     </h2>
 
                     <form 
-                        className="flex flex-col gap-3"
+                        className="flex flex-col gap-3 px-3"
                         onSubmit={handleSubmit}
                     >
                         <input 
@@ -77,27 +80,42 @@ function JobModal({ category, onClose, onAdd, onUpdate, job }){
                             placeholder="CompanyName"
                             value={company}
                             onChange={(e) => setCompany(e.target.value)}
-                            className="rounded-lg px-3 py-2 bg-white/20 text-white placeholder-white/60 outline-none" />
+                            className="rounded-lg px-3 py-2 bg-white/20 text-white
+                                     placeholder-white/60 outline-none focus:ring-2 focus:ring-orange-500/50 transition" />
                         
                         <select 
                             value={roles}
                             onChange={(e) => setRoles(e.target.value)}
-                            className="rounded-lg px-3 py-2 bg-white/20 text-white outline-none">
-                            <option value="">Select Role</option>
+                            className={selectClass}>
+                            <option 
+                                value=""
+                                className="bg-slate-800 text-white/60">
+                                Select Role
+                            </option>
                             {JOB_ROLES[category]?.map(role => (
-                                <option key={role} value={role}>
+                                <option 
+                                    key={role} 
+                                    value={role}
+                                    className="bg-slate-800 text-white/60">
                                     {role}
                                 </option>
                             ))}
                         </select>
-
+                            
                         <select 
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="rounded-lg px-3 py-2 bg-white/20 text-white outline-none">
-                            <option value="">Select Status</option>
+                            className={selectClass}>
+                            <option 
+                                value=""
+                                className="bg-slate-800 text-white/60">
+                                Select Status
+                            </option>
                             {JOB_STATUSES.map(status => (
-                                <option key={status} value={status}>
+                                <option 
+                                    key={status} 
+                                    value={status}
+                                    className="bg-slate-800 text-white/60">
                                     {status}
                                 </option>
                             ))}
@@ -108,7 +126,8 @@ function JobModal({ category, onClose, onAdd, onUpdate, job }){
                             value={note}
                             onChange={(e) => setNote(e.target.value)}
                             rows="3"
-                            className="rounded-lg px-3 py-2 bg-white/20 text-white placeholder-white/60 outline-none"/>
+                            className="rounded-lg px-3 py-2 bg-white/20 text-white placeholder-white/60 
+                                        focus:ring-2 focus:ring-orange-500/50 transition outline-none"/>
                         
                         {error && (
                             <p className="text-xs text-red-500">

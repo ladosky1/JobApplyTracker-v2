@@ -68,7 +68,7 @@ export default function AuthForm({title, submitText, onSubmit, extraText, extraL
                                 ${loading 
                                     ? "bg-orange-500/50 cursor-not-allowed"
                                     : "bg-orange-500 hover:bg-orange-600 text-white"}`}>
-                    {loading ? `${submitText}ing...` : submitText}
+                    {loading ? `Loading...` : submitText}
                 </button>
             </form>
 
