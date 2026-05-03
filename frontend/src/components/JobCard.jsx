@@ -2,6 +2,7 @@ import { useState } from "react";
 import { JOB_STATUSES } from "../data/jobConfig";
 import { useJobs } from "../context/JobContext";
 import StatusBadge from "./StatusBadge";
+import { asyncHandler } from "../util/asyncHandler";
 
 function JobCard({ job, onDelete, onEdit }) {
 
@@ -24,9 +25,20 @@ function JobCard({ job, onDelete, onEdit }) {
                     {editingStatus ? (
                         <select 
                             value={job.status} 
-                            onChange={(e) => {
-                                updateJob(job._id, { status: e.target.value }); 
-                                setEditingStatus(false);}}
+                            onChange={async (e) => {
+                                try {
+                                    await asyncHandler(
+                                        () => updateJob(job._id, { status: e.target.value }),
+                                        {
+                                            loadingMsg: "Updating Status...",
+                                            successMsg: "Status Updated",
+                                        }
+                                    );
+                                    setEditingStatus(false);
+                                } catch (err) {
+                                    //handled by toast
+                                }
+                            }}
                             className="text-xs bg-white/20 text-white/50 rounded px-2 py-1 outline-none"
                             autoFocus>
                             {JOB_STATUSES.map(status => (

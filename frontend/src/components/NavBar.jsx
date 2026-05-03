@@ -3,6 +3,7 @@ import Drawer from "./Drawer";
 import { useState } from "react";
 import { useAuth } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
+import { asyncHandler } from "../util/asyncHandler";
 
 function NavBar(){
 
@@ -11,8 +12,17 @@ function NavBar(){
     const { user, logout } = useAuth();
 
     const handleLogout = async () => {
-        await logout();
-        navigate("/login");
+        try {
+            await asyncHandler(
+                () => logout(), {
+                    loadingMsg: `Logging out...`,
+                    successMsg: `Logout successful`
+                }
+            );
+            navigate("/login");
+        } catch {
+            //handled by toast
+        } 
     }
 
     return(

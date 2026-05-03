@@ -1,9 +1,10 @@
 import { useState } from "react";
 import PasswordInput from "./PasswordInput";
+import { asyncHandler } from "../util/asyncHandler";
 
 export default function AuthForm({title, submitText, onSubmit, extraText, extraLink, Icon}){
     const [form, setForm] = useState({ name: "", email: "", password: ""});
-    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -11,11 +12,18 @@ export default function AuthForm({title, submitText, onSubmit, extraText, extraL
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
+
+        if(loading) return;
+
+        setLoading(true);
+
         try {
-            await onSubmit(form);
-        } catch (err) {
-            setError(err.response?.data?.message || "Something went wrong");
+            await asyncHandler(() => onSubmit(form), {
+                loadingMsg: `${title} in progress...`,
+                successMsg: `${title} successful`,
+            });
+        } finally{
+            setLoading(false);
         }
     };
 
@@ -55,13 +63,13 @@ export default function AuthForm({title, submitText, onSubmit, extraText, extraL
                 
                 <button
                     type="submit"
-                    className="mt-2 py-2 rounded-lg bg-orange-500 text-white font-medium hover:bg-orange-600 transition">
-                    {submitText}
+                    disabled={loading}
+                    className={`mt-2 py-2 rounded-lg font-medium transition
+                                ${loading 
+                                    ? "bg-orange-500/50 cursor-not-allowed"
+                                    : "bg-orange-500 hover:bg-orange-600 text-white"}`}>
+                    {loading ? `${submitText}ing...` : submitText}
                 </button>
-
-                {error && (
-                    <p className="text-red-400 text-sm mt-2">{error}</p>
-                )}
             </form>
 
             <p className="text-xs text-center text-white/60 mt-4">

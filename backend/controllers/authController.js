@@ -15,11 +15,12 @@ export const getMe = async (req, res) => {
         const user = await User.findById(req.user.id).select("-password");
         res.status(200).json(user);
     } catch (error) {
-        res.status(500).json({ message: "error.message" });
+        res.status(500).json({ message: error.message });
     }
 }
 
 export const registerUser = async (req, res) => {
+
     try {
         const {name, email, password} = req.body;
 
@@ -39,17 +40,16 @@ export const registerUser = async (req, res) => {
 
         const token = generateToken(user._id);
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "none",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        }).status(201).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
+        res.status(201).json({
+            token,
+            user:{
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+            }
         });
     } catch (error) {
+        console.error("Error in registerUser:", error);
         res.status(500).json({ message: error.message });
     }   
 }
@@ -66,25 +66,19 @@ export const loginUser = async(req, res) => {
 
         const token = generateToken(user._id);
 
-        res.cookie("token", token, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === "production",
-                    sameSite: "none",
-                    maxAge: 7 * 24 * 60 * 60 * 1000
-            }).status(200).json({
+        res.status(200).json({
+            token,
+            user:{
                 _id: user._id,
                 name: user.name,
-                email: user.email,});
+                email: user.email,
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 }
 
 export const logoutUser = (req, res) => {
-    res.cookie("token", "", {
-        httpOnly: true,
-        expires: new Date(0)
-    });
-
     res.status(200).json({message: "logged out succesfully"});
 }

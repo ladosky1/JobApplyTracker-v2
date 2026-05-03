@@ -9,6 +9,47 @@ function JobModal({ category, onClose, onAdd, onUpdate, job }){
     const [status, setStatus] = useState(job?.status ?? "");
     const [note, setNote] = useState(job?.note ?? "");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if(loading) return;
+
+        if(!company || !roles || !status){
+            setError("Please Fill in all required fields")
+            return
+        }
+
+        setError("");
+        setLoading(true);
+
+        const payload = ({
+                company, 
+                roles, 
+                status, 
+                note, 
+                category});
+
+        try {
+            if(job){
+                await onUpdate(job._id, payload);
+            } else {
+                await onAdd(payload);
+            }
+
+            onClose();
+        } catch (err) {
+            setError(err.message || "failed to save job");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleClose = () => {
+        setError("");
+        onClose();
+    }
 
     return(
         <div
@@ -29,31 +70,7 @@ function JobModal({ category, onClose, onAdd, onUpdate, job }){
 
                     <form 
                         className="flex flex-col gap-3"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-
-                            if(!company || !roles || !status){
-                                setError("Please Fill in all required field")
-                                return
-                            }
-
-                            setError("")
-
-                            const payload = ({
-                                    company, 
-                                    roles, 
-                                    status, 
-                                    note, 
-                                    category});
-                            
-                            if(job){
-                                onUpdate(job._id, payload);
-                            } else {
-                                onAdd(payload);
-                            }
-
-                            onClose();
-                        }}
+                        onSubmit={handleSubmit}
                     >
                         <input 
                             type="text"
@@ -101,15 +118,19 @@ function JobModal({ category, onClose, onAdd, onUpdate, job }){
                         <div className="flex gap-3 mt-2">
                             <button
                                 type="button"
-                                onClick={onClose}
+                                onClick={handleClose}
                                 className="flex-1 py-2 rounded-lg bg-white/20 text-white">
                                 Cancel
                             </button>
 
                             <button
                                 type="submit"
-                                className="flex-1 py-2 rounded-lg bg-orange-500 text-white">
-                                Save
+                                disabled={loading}
+                                className={`flex-1 py-2 rounded-lg bg-orange-500 text-white
+                                            ${loading 
+                                                ? "bg-orange-500/50 cursor-not-allowed"
+                                                : "bg-orange-500 hover:bg-orange-600"}`}>
+                                {loading ? "Saving..." : "Save"}
                             </button>
                         </div>
                     </form>

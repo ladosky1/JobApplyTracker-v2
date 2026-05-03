@@ -6,10 +6,12 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AppLayout from "./layout/AppLayout";
+import { Toaster } from "react-hot-toast";
 
 function App(){
   return(
       <BrowserRouter>
+      <Toaster position="top-center"/>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />}/>

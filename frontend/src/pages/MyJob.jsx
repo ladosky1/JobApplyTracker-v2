@@ -2,10 +2,11 @@ import { useState } from "react";
 import JobCard from "../components/JobCard";
 import JobModal from "../components/JobModal";
 import { useJobs } from "../context/JobContext";
+import { asyncHandler } from "../util/asyncHandler";
 
 function MyJobs(){
 
-    const { jobs, deleteJob, updateJob } = useJobs();
+    const { jobs, deleteJob, updateJob, error, loading } = useJobs();
     const [editingJob, setEditingJob] = useState(null);
     const [statusFilter, setStatusFilter] = useState("all");
     const [categoryFilter, setCategoryFilter] = useState("all");
@@ -36,6 +37,30 @@ function MyJobs(){
         search !== "" || 
         statusFilter !== "all" || 
         categoryFilter !== "all";
+
+    const handleDelete = async (id) => {
+        try {
+            if(!window.confirm("Delete this job?")) return;
+            
+            await asyncHandler(
+                () => deleteJob(id),
+                {
+                    loadingMsg: "Deleting job...",
+                    successMsg: "Job deleted",
+                }
+            );
+        } catch (err) {
+            //handled by toast
+        }
+    }
+
+    if(loading.fetch){
+        return <p>Loading jobs...</p>
+    }
+
+    if(error){
+        return <p className="text-red-400">{error}</p>
+    }
 
     return(
         <div className="min-h-screen px-6 pt-8">
@@ -111,7 +136,7 @@ function MyJobs(){
                         <JobCard 
                             key={job._id} 
                             job={job}
-                            onDelete={() => deleteJob(job._id)}
+                            onDelete={() => handleDelete(job._id)}
                             onEdit={setEditingJob}/>
                     ))}
                 </div>

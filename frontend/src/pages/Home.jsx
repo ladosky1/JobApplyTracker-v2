@@ -7,7 +7,7 @@ import { useJobs } from "../context/JobContext";
 
 function Home(){
 
-    const { jobs, addJob } = useJobs();
+    const { jobs, addJob, error, loading } = useJobs();
     const [openModal, setOpenModal] = useState(false);
     const [activeCategory, setActiveCategory] = useState(null);
     
@@ -19,6 +19,14 @@ function Home(){
     const techCount = jobs.filter(job => job.category === "Technology").length;
     const hospitalityCount = jobs.filter(job => job.category === "Hospitality").length;
     const retailCount = jobs.filter(job => job.category === "Retails").length;
+
+    if(loading.fetch){
+        return <p>Loading jobs...</p>
+    }
+
+    if(error){
+        return <p className="text-red-400">{error}</p>
+    }
 
     return(
         <div 
