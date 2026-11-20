@@ -5,10 +5,12 @@ import { AppError } from "../errors/AppError.js";
 import {
     createOpportunity as createOpportunityService,
     getOpportunities as getOpportunitiesService,
+    getOpportunityById as getOpportunityByIdService,
     getDashboardSummary as getDashboardSummaryService,
     updateOpportunity as updateOpportunityService,
     deleteOpportunity as deleteOpportunityService,
 } from "../services/opportunityService.js";
+
 import { getOpportunitiesSchema } from "../validators/opportunityValidator.js";
 
 const getAuthenticatedUserId = (req: Request): string => {
@@ -32,6 +34,26 @@ export const getOpportunities = async (
         const result = await getOpportunitiesService(userId, options);
 
         res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getOpportunityById = async (
+    req: Request<{ opportunityId: string }>,
+    res: Response,
+    next: NextFunction,
+): Promise<void> => {
+    try {
+        const userId = getAuthenticatedUserId(req);
+        const { opportunityId } = req.params;
+
+        const opportunity = await getOpportunityByIdService(
+            userId,
+            opportunityId,
+        );
+
+        res.status(200).json({ opportunity });
     } catch (error) {
         next(error);
     }

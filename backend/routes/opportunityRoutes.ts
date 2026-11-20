@@ -4,11 +4,12 @@ import protect from "../middleware/authMiddleware.js";
 import validate from "../middleware/validate.js";
 
 import {
-    getOpportunities,
     createOpportunity,
-    updateOpportunity,
     deleteOpportunity,
     getDashboardSummary,
+    getOpportunities,
+    getOpportunityById,
+    updateOpportunity,
 } from "../controllers/opportunityController.js";
 
 import {
@@ -31,6 +32,8 @@ router.get(
     validate(getOpportunitiesSchema),
     getOpportunities,
 );
+
+router.get("/:opportunityId", getOpportunityById);
 
 router.post(
     "/",

@@ -132,6 +132,26 @@ export const getOpportunities = async (
     };
 };
 
+export const getOpportunityById = async (
+    userId: string,
+    opportunityId: string,
+) => {
+    if (!mongoose.isValidObjectId(opportunityId)) {
+        throw new AppError("Invalid opportunity ID.", 400);
+    }
+
+    const opportunity = await Opportunity.findOne({
+        _id: opportunityId,
+        user: userId,
+    }).populate("category", "name type isDefault");
+
+    if (!opportunity) {
+        throw new AppError("Opportunity not found.", 404);
+    }
+
+    return opportunity;
+};
+
 const getCategory = async (
     userId: string,
     type: OpportunityType,
