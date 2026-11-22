@@ -1,7 +1,7 @@
 import { Center, Loader } from '@mantine/core';
 import { Navigate, Outlet } from 'react-router-dom';
 
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 
 export const PublicOnlyRoute = () => {
   const { isAuthenticated, isLoading } = useAuth();

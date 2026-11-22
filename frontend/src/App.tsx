@@ -5,7 +5,7 @@ import {
   Routes,
 } from "react-router-dom";
 
-import { useAuth } from "./features/auth/context/AuthContext";
+import { useAuth } from "./features/auth/context/useAuth";
 import { ProtectedRoute } from "./features/auth/components/ProtectedRoute";
 import { PublicOnlyRoute } from "./features/auth/components/PublicOnlyRoute";
 

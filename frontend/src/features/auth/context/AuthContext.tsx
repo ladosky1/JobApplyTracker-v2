@@ -1,25 +1,18 @@
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useState,
   type ReactNode,
 } from 'react';
+import {
+  AuthContext,
+  type AuthContextValue,
+} from './AuthContextDefinition';
 
 import { authService } from '../services/authService';
 import type { AuthUser, LoginRequest } from '../types/auth.types';
 import { tokenManager } from '../../../services/api/tokenManager';
 
-interface AuthContextValue {
-  user: AuthUser | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (payload: LoginRequest) => Promise<void>;
-  logout: () => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextValue | null>(null);
 
 // Shared across provider mounts to avoid duplicate refresh requests
 // during React StrictMode's development effect checks.
@@ -111,14 +104,4 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = (): AuthContextValue => {
-  const context = useContext(AuthContext);
-
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-
-  return context;
 };

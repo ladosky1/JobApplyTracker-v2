@@ -31,7 +31,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import { useAuth } from "../../features/auth/context/AuthContext";
+import { useAuth } from "../../features/auth/context/useAuth";
 
 const desktopNavigation = [
   {

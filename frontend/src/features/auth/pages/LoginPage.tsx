@@ -19,7 +19,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { loginSchema, type LoginFormValues } from '../schemas/authSchema';
 
 const getErrorMessage = (error: unknown): string => {

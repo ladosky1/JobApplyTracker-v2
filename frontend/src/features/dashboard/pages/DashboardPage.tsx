@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { IconAlertCircle, IconRefresh } from "@tabler/icons-react";
 
-import { useAuth } from "../../auth/context/AuthContext";
+import { useAuth } from "../../auth/context/useAuth";
 import { useDashboard } from "../hooks/useDashboard";
 
 import DashboardOverview from "../components/DashboardOverview";
