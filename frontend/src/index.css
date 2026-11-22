@@ -1,3 +1,122 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+@import "tailwindcss";
+
+/* =========================================
+   J&GPURSUITS DESIGN TOKENS
+========================================= */
+
+:root {
+  font-family: 'Manrope Variable', sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Backgrounds and surfaces */
+  --app-background: #191b22;
+  --app-surface: #23262f;
+  --app-surface-elevated: #343844;
+  --app-border: #414550;
+
+  /* Brand */
+  --app-brand: #b6ff2e;
+  --app-brand-hover: #c5ff5c;
+
+  /* Text */
+  --app-text-primary: #f5f6f8;
+  --app-text-secondary: #a1a6b2;
+  --app-text-muted: #737987;
+
+  /* Opportunity types */
+  --app-job: #38c9bd;
+  --app-gig: #f5a742;
+
+  /* Semantic colours */
+  --app-success: #45d483;
+  --app-warning: #f5b942;
+  --app-danger: #ff6464;
+  --app-info: #69aaff;
+}
+
+/* =========================================
+   TAILWIND COLOR UTILITIES
+========================================= */
+
+@theme inline {
+  --color-background: var(--app-background);
+  --color-surface: var(--app-surface);
+  --color-surface-elevated: var(--app-surface-elevated);
+  --color-border: var(--app-border);
+
+  --color-brand: var(--app-brand);
+  --color-brand-hover: var(--app-brand-hover);
+
+  --color-primary-text: var(--app-text-primary);
+  --color-secondary-text: var(--app-text-secondary);
+  --color-muted-text: var(--app-text-muted);
+
+  --color-job: var(--app-job);
+  --color-gig: var(--app-gig);
+
+  --color-success: var(--app-success);
+  --color-warning: var(--app-warning);
+  --color-danger: var(--app-danger);
+  --color-info: var(--app-info);
+}
+
+/* =========================================
+   GLOBAL STYLES
+========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--app-background);
+  color: var(--app-text-primary);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background-color: var(--app-brand);
+  color: var(--app-background);
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--app-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--app-surface-elevated);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--app-border);
+}
