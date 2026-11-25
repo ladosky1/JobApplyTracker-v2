@@ -9,6 +9,7 @@ import {
     getDashboardSummary,
     getOpportunities,
     getOpportunityById,
+    getReminders,
     updateOpportunity,
 } from "../controllers/opportunityController.js";
 
@@ -16,6 +17,7 @@ import {
     createOpportunitySchema,
     updateOpportunitySchema,
     getOpportunitiesSchema,
+    getRemindersSchema
 } from "../validators/opportunityValidator.js";
 
 const router = express.Router();
@@ -31,6 +33,12 @@ router.get(
     "/",
     validate(getOpportunitiesSchema),
     getOpportunities,
+);
+
+router.get(
+    "/reminders",
+    validate(getRemindersSchema),
+    getReminders,
 );
 
 router.get("/:opportunityId", getOpportunityById);

@@ -37,6 +37,14 @@ type OpportunityQueryOptions = {
     limit: number;
 };
 
+type ReminderQueryOptions = {
+    status: "upcoming" | "due" | "overdue" | "sent";
+    type?: OpportunityType;
+    search?: string;
+    page: number;
+    limit: number;
+};
+
 export const getOpportunities = async (
     userId: string,
     options: OpportunityQueryOptions,
@@ -150,6 +158,124 @@ export const getOpportunityById = async (
     }
 
     return opportunity;
+};
+
+export const getReminders = async (
+    userId: string,
+    options: ReminderQueryOptions,
+) => {
+    const {
+        status,
+        type,
+        search,
+        page,
+        limit,
+    } = options;
+
+    const filter: QueryFilter<IOpportunity> = {
+        user: new mongoose.Types.ObjectId(userId),
+        followUpAt: { $ne: null },
+    };
+
+    if (type) {
+        filter.type = type;
+    }
+
+    // Search by opportunity title or organization name.
+    if (search) {
+        const escapedSearch = search.replace(
+            /[.*+?^${}()|[\]\\]/g,
+            "\\$&",
+        );
+
+        const searchRegex = new RegExp(escapedSearch, "i");
+
+        filter.$or = [
+            { title: searchRegex },
+            { organizationName: searchRegex },
+        ];
+    }
+
+    // Sent reminders are based on successful email delivery.
+    if (status === "sent") {
+        filter.followUpEmailSentAt = { $ne: null };
+    } else {
+        // Upcoming, due, and overdue exclude terminal opportunities.
+        filter.$and = [
+            ...(filter.$and ?? []),
+            {
+                $or: [
+                    {
+                        type: "job",
+                        status: {
+                            $nin: [...TERMINAL_JOB_STATUSES],
+                        },
+                    },
+                    {
+                        type: "gig",
+                        status: {
+                            $nin: [...TERMINAL_GIG_STATUSES],
+                        },
+                    },
+                ],
+            },
+        ];
+
+        const timeZone = process.env.APP_TIME_ZONE || "UTC";
+        const now = new Date();
+
+        const followUpDay = {
+            $dateTrunc: {
+                date: "$followUpAt",
+                unit: "day",
+                timezone: timeZone,
+            },
+        };
+
+        const today = {
+            $dateTrunc: {
+                date: now,
+                unit: "day",
+                timezone: timeZone,
+            },
+        };
+
+        const dateOperator = {
+            upcoming: "$gt",
+            due: "$eq",
+            overdue: "$lt",
+        }[status];
+
+        filter.$expr = {
+            [dateOperator]: [followUpDay, today],
+        };
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [reminders, total] = await Promise.all([
+        Opportunity.find(filter)
+            .populate("category", "name type isDefault")
+            .sort({ followUpAt: 1, _id: 1 })
+            .skip(skip)
+            .limit(limit),
+
+        Opportunity.countDocuments(filter),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+        reminders,
+        pagination: {
+            total,
+            page,
+            limit,
+            totalPages,
+            hasNextPage: page < totalPages,
+            hasPreviousPage: page > 1 && total > 0,
+        },
+    };
 };
 
 const getCategory = async (
@@ -961,4 +1087,3 @@ export const getDashboardSummary = async (userId: string) => {
         ),
     };
 };
-

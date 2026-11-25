@@ -6,12 +6,16 @@ import {
     createOpportunity as createOpportunityService,
     getOpportunities as getOpportunitiesService,
     getOpportunityById as getOpportunityByIdService,
+    getReminders as getRemindersService,
     getDashboardSummary as getDashboardSummaryService,
     updateOpportunity as updateOpportunityService,
     deleteOpportunity as deleteOpportunityService,
 } from "../services/opportunityService.js";
 
-import { getOpportunitiesSchema } from "../validators/opportunityValidator.js";
+import {
+    getOpportunitiesSchema,
+    getRemindersSchema,
+} from "../validators/opportunityValidator.js";
 
 const getAuthenticatedUserId = (req: Request): string => {
     if (!req.user) {
@@ -32,6 +36,24 @@ export const getOpportunities = async (
         const options = getOpportunitiesSchema.shape.query.parse(req.query);
 
         const result = await getOpportunitiesService(userId, options);
+
+        res.status(200).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getReminders = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+): Promise<void> => {
+    try {
+        const userId = getAuthenticatedUserId(req);
+
+        const options = getRemindersSchema.shape.query.parse(req.query);
+
+        const result = await getRemindersService(userId, options);
 
         res.status(200).json(result);
     } catch (error) {

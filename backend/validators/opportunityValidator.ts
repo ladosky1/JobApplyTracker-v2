@@ -128,3 +128,23 @@ export const getOpportunitiesSchema = z.object({
             }
         }),
 });
+
+export const getRemindersSchema = z.object({
+    query: z.object({
+        status: z
+            .enum(["upcoming", "due", "overdue", "sent"])
+            .default("upcoming"),
+
+        type: opportunityTypeSchema.optional(),
+
+        search: z
+            .string()
+            .trim()
+            .max(100, "Search cannot exceed 100 characters.")
+            .optional(),
+
+        page: z.coerce.number().int().min(1).default(1),
+
+        limit: z.coerce.number().int().min(1).max(50).default(10),
+    }),
+});
