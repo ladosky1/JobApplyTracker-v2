@@ -16,6 +16,8 @@ import ForgotPasswordPage from "./features/auth/pages/ForgotPasswordPage";
 import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
 
 import DashboardPage from "./features/dashboard/pages/DashboardPage";
+import OpportunitiesPage from "./features/opportunities/pages/OpportunitiesPage";
+import CategoriesPage from "./features/categories/pages/CategoriesPage";
 import AppLayout from "./app/layouts/AppLayout";
 
 interface PlaceholderPageProps {
@@ -75,7 +77,7 @@ function App() {
 
           <Route
             path="/opportunities"
-            element={<PlaceholderPage title="Opportunities" />}
+            element={<OpportunitiesPage />}
           />
 
           <Route
@@ -85,7 +87,7 @@ function App() {
 
           <Route
             path="/categories"
-            element={<PlaceholderPage title="Categories" />}
+            element={<CategoriesPage />}
           />
 
           <Route
